@@ -21,3 +21,5 @@ const Usuario = sequelize.define(
     timestamps: true,
   }
 );
+
+module.exports = Usuario;

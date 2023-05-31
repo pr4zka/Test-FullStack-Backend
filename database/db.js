@@ -1,9 +1,14 @@
 const { Sequelize } = require("sequelize");
+require('dotenv').config();
 
 
-const host = 'localhost';
-const port = '3306';
-const sequelize = new Sequelize('test_backend', 'root', 'Narutoshippuden', {
+const host = process.env.MYSQL_ROOT_HOST || 'localhost';
+const port = process.env.MYSQL_PORT || 3306;
+const database = process.env.MYSQL_DATABASE || 'test_backend';
+const username = process.env.MYSQL_ROOT_USER || 'root';
+const password = process.env.MYSQL_ROOT_PASSWORD || 'Narutoshippuden';
+console.log(host, port, database, username, password);
+const sequelize = new Sequelize(database, username, password, {
   host,
   port,
   dialect: "mysql",

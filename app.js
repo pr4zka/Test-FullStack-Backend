@@ -1,5 +1,6 @@
 const express = require('express')
 const morgan = require('morgan')
+const cors = require("cors")
 const {dbConnectMysql, sequelize} = require('./database/db')
 
 const {ingredientes} = require('./models/ingredientes')
@@ -8,12 +9,17 @@ const {usuario} = require('./models/usuario')
 
 const app = express()
 const apiRouter = express.Router();
-
+const pizzasRoutes = require("./routes/pizzas.routes");
+const ingredientesRoutes = require ("./routes/ingredientes.routes");
+const usuariosRoutes = require ("./routes/usuario.routes");
 
 app.use(morgan("dev"));
 app.use(express.json());
+app.use(cors('*'))
 app.use("/api", apiRouter);
-
+apiRouter.use("/pizzas", pizzasRoutes);
+apiRouter.use("/ingredientes", ingredientesRoutes)
+apiRouter.use("/auth", usuariosRoutes)
 
 
 
@@ -22,7 +28,7 @@ app.use("/api", apiRouter);
 
 
 app.listen(3000, () => {
-  sequelize.sync({ force: true }).then(() => {
+  sequelize.sync({ force: false }).then(() => {
     console.log(`Server running on port ${3000}`);
   });
   dbConnectMysql();

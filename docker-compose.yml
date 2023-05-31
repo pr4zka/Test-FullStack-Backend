@@ -1,12 +1,43 @@
 version: '3'
 
 services:
-  test_fullstack:
-    image: nodejs
-    container_name: test_fullstack
-    network_mode: host
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - 8000:3000
-    build: .
-    command: npm run start
+      - "4000:4000"
+    networks:
+      - my-network
+    depends_on:
+      - mysql
+    env_file:
+      - .env
 
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - my-network
+
+  mysql:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_DATABASE: mydatabase
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: mypassword
+      MYSQL_ROOT_HOST: 'localhost'
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - my-network
+
+networks:
+  my-network:
+
+volumes:
+  mysql-data:
