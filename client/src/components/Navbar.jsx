@@ -6,7 +6,18 @@ export const Navbar = () => {
       <h1 className="text-lg">Frontend Pizzas</h1>
       <ul className="flex gap-x-4">
         <li>
-          <Link to="/login" className="bg-indigo-700 text-white text-sm font-medium px-2 py-1 hover:bg-indigo-600 focus:outline-none rounded">
+          <Link
+            to="/"
+            className="bg-indigo-700 text-white text-sm font-medium px-2 py-1 hover:bg-indigo-600 focus:outline-none rounded"
+          >
+            Home
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/login"
+            className="bg-indigo-700 text-white text-sm font-medium px-2 py-1 hover:bg-indigo-600 focus:outline-none rounded"
+          >
             Login
           </Link>
         </li>

@@ -4,19 +4,18 @@ import ModalCustom from "../common/Modal";
 import { toast } from "react-toastify";
 import { Formik } from "formik";
 import { Input } from "@nextui-org/react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPizzas, createPizza } from "../feactures/pizzas/pizzasSlice";
 
 function Pizzas() {
   const [show, setShow] = useState();
-  const [brand, setBrand] = useState([]);
-  const [category, setCategory] = useState([]);
-  const [products, setProducts] = useState([]);
   const [visible, setVisible] = useState(false);
   const [product, setProduct] = useState({});
   const [action, setAction] = useState("created");
 
-  const handleGetPizzas = () => {
-  
-  }
+  const dispatch = useDispatch();
+
+  const pizzas = useSelector((state) => state.pizzas);
 
   const handleChanged = (e) => {
     if (e.target.id === "p_venta" && isNaN(e.target.value)) {
@@ -29,15 +28,9 @@ function Pizzas() {
     setProduct({ ...product, [e.target.id]: e.target.value });
   };
 
-  const handleCreatePizza = () => {
-  
-  };
+  const handleCreatePizza = () => {};
 
-  const handleEditPizza = () => {
-   
-  };
-
- 
+  const handleEditPizza = () => {};
 
   const createdAndEditPizza = () => {
     return (
@@ -97,6 +90,7 @@ function Pizzas() {
   };
 
   useEffect(() => {
+    dispatch(fetchPizzas());
   }, []);
   return (
     <>
@@ -120,6 +114,20 @@ function Pizzas() {
           </div>
         </div>
       </div>
+      <div className="flex flex-wrap">
+        {pizzas &&
+          pizzas.map((pizza, i) => (
+            <div key={i} className="px-2">
+              <div className="bg-indigo-100 w-full rounded-lg shadow-lg shadow-gray-400 p-4 mb-2 hover:bg-slate-700 cursor-pointer px-10 py-10 mx-16 my-10">
+                <div>
+                  <h1 className="py-2">{pizza.nombre}</h1>
+                  <h1>{pizza.precio} Gs</h1>
+                  <h1 className="py-2">{pizza.estado}</h1>
+                </div>
+              </div>
+            </div>
+          ))}
+      </div>
       <ModalCustom
         visible={visible}
         setVisible={setVisible}
@@ -131,6 +139,7 @@ function Pizzas() {
           },
           function: {
             aceptar: () => {
+              handleCreatePizza();
             },
             cancelar: () => {
               console.log("cancelar");
@@ -138,7 +147,7 @@ function Pizzas() {
           },
         }}
       >
-        {createdAndEditPizza}
+        {createdAndEditPizza()}
       </ModalCustom>
     </>
   );
