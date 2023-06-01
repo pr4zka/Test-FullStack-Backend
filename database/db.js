@@ -2,19 +2,19 @@ const { Sequelize } = require("sequelize");
 require('dotenv').config();
 
 
-const host = process.env.MYSQL_ROOT_HOST || 'localhost';
-const port = process.env.MYSQL_PORT || 3306;
-const database = process.env.MYSQL_DATABASE || 'test_backend';
-const username = process.env.MYSQL_ROOT_USER || 'root';
-const password = process.env.MYSQL_ROOT_PASSWORD || 'Narutoshippuden';
-console.log(host, port, database, username, password);
-const sequelize = new Sequelize(database, username, password, {
-  host,
-  port,
-  dialect: "mysql",
+const dbHost = process.env.DB_HOST || 'localhost';
+const dbPort = process.env.DB_PORT || 5432;
+const dbUser = process.env.DB_USER || 'postgres';
+const dbPassword = process.env.DB_PASSWORD || 'Narutoshippuden';
+const dbName = process.env.DB_NAME || 'test_backend';
+
+const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
+  dbHost,
+  dbPort,
+  dialect: "postgres",
 });
 
-const dbConnectMysql = async () => {
+const dbConnect = async () => {
   await sequelize
     .authenticate()
     .then(() => {
@@ -27,5 +27,5 @@ const dbConnectMysql = async () => {
 
 module.exports = {
   sequelize,
-  dbConnectMysql,
+  dbConnect,
 };

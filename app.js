@@ -1,7 +1,7 @@
 const express = require('express')
 const morgan = require('morgan')
 const cors = require("cors")
-const {dbConnectMysql, sequelize} = require('./database/db')
+const {dbConnect, sequelize} = require('./database/db')
 
 const {ingredientes} = require('./models/ingredientes')
 const {pizza} = require('./models/pizza')
@@ -31,5 +31,5 @@ app.listen(3000, () => {
   sequelize.sync({ force: false }).then(() => {
     console.log(`Server running on port ${3000}`);
   });
-  dbConnectMysql();
+  dbConnect();
 });
