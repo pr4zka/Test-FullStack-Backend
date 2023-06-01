@@ -57,6 +57,7 @@ const pizzaController = {
   },
   addIngredientes: async (req, res) => {
     const { pizzaId, ingredienteId } = req.params;
+    console.log(pizzaId, ingredienteId)
 
     try {
       const resultPizza = await pizza.findByPk(pizzaId);
@@ -80,33 +81,32 @@ const pizzaController = {
     }
   },
   getDetalles: async (req, res) => {
-    try {
-      const pizzaId = req.params.id;
-      const result = await pizza.findByPk(pizzaId);
-      if (!result) return res.status(404).json({ msg: "Pizza no encontrada" });
-      const detail = await result.getIngredientes({
-        raw: true,
-        attributes: { exclude: ["createdAt", "updatedAt"] },
-      });
-
-      const pizzaDetalle = detail.map((item) => ({
-        id: item.id,
-        nombre: item.nombre,
-        categoria: item.categoria,
-
-      }));
-
-      res.status(200).json({
-        msg: "Pizza",
-        result: result.get({
-          plain: true,
-          attributes: ["nombre", "precio", "estado"],
-        }),
-        detail: pizzaDetalle,
-      });
-    } catch (error) {
-      res.status(500).json({ msg: "Error server", error });
+    const result = await pizza.findOne({
+      where: { id: req.params.id },
+      include: [
+        {
+          model: ingredientes,
+          attributes: ["id", "nombre", "categoria"],
+          through: { attributes: [] }, // Si se utiliza una tabla intermedia (join table) para la relación
+        },
+      ],
+      attributes: ["id", "nombre", "precio", "estado"],
+    });
+    const pizzaDetalles = {
+      id: result.id,
+      nombre: result.nombre,
+      precio: result.precio,
+      estado: result.estado,
+      ingredientes: result.ingredientes.map((ingrediente) => ({
+        id: ingrediente.id,
+        nombre: ingrediente.nombre,
+        categoria: ingrediente.categoria,
+      })),
+    };
+    if (!pizzaDetalles) {
+      return res.status(404).json({ msg: "Pizza no encontrada" });
     }
+    res.status(200).json(pizzaDetalles);
   },
   removeIngredientes: async (req, res) => {
     const { pizzaId, ingredienteId } = req.params;

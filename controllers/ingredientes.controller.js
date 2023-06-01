@@ -28,6 +28,7 @@ const ingredienteController = {
             const newIngrediente = await ingredientes.create({ nombre, categoria });
             res.status(201).json({ msg: "Ingrediente creado", newIngrediente });
         } catch (error) {
+            console.log(error)
             res.status(500).json({ msg: "Error server", error });
         }
     },
