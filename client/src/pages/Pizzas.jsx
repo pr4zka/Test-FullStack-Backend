@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
 import { fetchPizzas } from "../feactures/pizzas/pizzasSlice";
 
 import { fetchIngredientes } from "../feactures/ingredientes/ingredientesSlice";
@@ -13,7 +12,6 @@ function Pizzas() {
   const navigate = useNavigate();
 
   const pizzas = useSelector((state) => state.pizzas);
-  console.log("pizzas", pizzas)
 
   useEffect(() => {
     dispatch(fetchPizzas());

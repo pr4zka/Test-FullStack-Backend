@@ -4,7 +4,7 @@ import { Form, Formik } from "formik";
 import { showNotification } from "../feactures/toastify/toastifySlice";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { updatedPizza, getPizza } from "../api/pizza";
 
 const PizzasForm = () => {
@@ -16,6 +16,7 @@ const PizzasForm = () => {
 
   const dispatch = useDispatch();
   const params = useParams();
+  const navigate = useNavigate();
 
   const handleCreatePizza = async (values) => {
     try {
@@ -30,6 +31,7 @@ const PizzasForm = () => {
     try {
       const res = await updatedPizza(id, values);
       console.log(res);
+      navigate("/");
     } catch (error) {
       console.log(error);
     }
@@ -39,22 +41,29 @@ const PizzasForm = () => {
     const fetchPizza = async () => {
       try {
         const res = await getPizza(params.id);
-        console.log(res);
+        console.log(res.data.pizzas);
+        setPizza({
+          nombre: res.data.pizzas.nombre,
+          precio: res.data.pizzas.precio,
+          estado: res.data.pizzas.estado,
+        })
       } catch (error) {
         console.log(error);
       }
     };
     fetchPizza();
-  }, []);
+  }, [params.id]);
   return (
     <>
       <div className="flex justify-center">
         <div className="bg-gray-200 rounded-lg shadow-lg shadow-gray-300 p-8 h-4/6 w-4/12 m-auto py-10 px-10 mt-24">
           <Formik
             initialValues={pizza}
+            enableReinitialize={true}
             onSubmit={async (values, action) => {
               if (params.id) {
                 await handleUpdatePizza(params.id, values);
+                dispatch(showNotification("success", "Pizza actualizada correctamente"))
               } else {
                 await handleCreatePizza(values);
               }
