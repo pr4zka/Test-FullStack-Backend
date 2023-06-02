@@ -19,6 +19,7 @@ const authSlice = createSlice({
   name: "auth",
   initialState: {
     token: localStorage.getItem("token") || null,
+    basicToken: localStorage.getItem("basicToken") || null,
     user: JSON.parse(localStorage.getItem("user")) || null,
     isAuth: localStorage.getItem("isAuth") === "true" ? true : false,
   },
@@ -34,11 +35,11 @@ const authSlice = createSlice({
       localStorage.setItem("isAuth", "true");
     },
     setAuhtBasic: (state, action) => {
-      state.token = action.payload.token;
+      state.basicToken = action.payload.token;
       state.user = action.payload.user;
       state.isAuth = true;
 
-      localStorage.setItem("token", action.payload.token);
+      localStorage.setItem("basicToken", action.payload.token);
       localStorage.setItem("user", JSON.stringify(action.payload.user));
       localStorage.setItem("isAuth", "true");
     },
@@ -48,6 +49,7 @@ const authSlice = createSlice({
       state.isAuth = false;
 
       localStorage.removeItem("token");
+      localStorage.removeItem("basicToken");
       localStorage.removeItem("user");
       localStorage.removeItem("isAuth");
     },

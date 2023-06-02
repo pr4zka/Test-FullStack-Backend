@@ -2,12 +2,13 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login, loginBasic, setAuthData, setAuhtBasic } from "../feactures/auth/authSlice";
 import {showNotification} from '../feactures/toastify/toastifySlice'
+import { useNavigate} from 'react-router-dom'
 
 export const Login = () => {
   const [auth, setAuth] = useState("");
   const [nombre, setNombre] = useState("");
   const [password, setPassword] = useState("");
-console.log(auth)
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleAuth = (e) => {
@@ -42,7 +43,9 @@ console.log(auth)
         if(res.error && res.error.code === 'ERR_BAD_REQUEST')dispatch(showNotification('error', 'Usuario o contraseña incorrectos'))
         dispatch(setAuhtBasic(res.payload));
       }
+       navigate('/')
        dispatch(showNotification('success', 'Usuario autenticado correctamente'))
+       
     } catch (error) {
       console.log(error)
     }

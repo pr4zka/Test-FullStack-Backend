@@ -10,11 +10,11 @@ export const IngredientesAdd = () => {
   const { id } = useParams();
   const ingrediente = useSelector((state) => state.ingredientes);
   const [selectedIngrediente, setSelectedIngrediente] = useState("");
-
+  console.log(selectedIngrediente);
   const handleIngredienteChange = (event) => {
     setSelectedIngrediente(event.target.value);
   };
- console.log("selectedIngrediente", selectedIngrediente)
+  console.log("selectedIngrediente", selectedIngrediente);
   const handleAgregarClick = async () => {
     try {
       const response = await axios.post(
@@ -40,6 +40,7 @@ export const IngredientesAdd = () => {
             value={selectedIngrediente}
             onChange={handleIngredienteChange}
           >
+            <option value="">Seleccionar ingrediente</option>
             {ingrediente && ingrediente.result.length > 0 ? (
               ingrediente.result.map((ingre, i) => (
                 <option key={i} value={ingre.id}>
@@ -47,16 +48,19 @@ export const IngredientesAdd = () => {
                 </option>
               ))
             ) : (
-              <option>No hay ingredientes disponibles</option>
+              <option disabled>No hay ingredientes disponibles</option>
             )}
           </select>
         </form>
-        <button onClick={handleAgregarClick} className="px-4 mx-2 bg-indigo-500 rounded hover:bg-indigo-600 text-white">
+        <button
+          onClick={handleAgregarClick}
+          className="px-4 mx-2 bg-indigo-500 rounded hover:bg-indigo-600 text-white"
+          disabled={!selectedIngrediente}
+        >
           Agregar
         </button>
       </div>
-      <div className="my-9 mx-6 ml-24">
-      </div>
+      <div className="my-9 mx-6 ml-24"></div>
     </div>
   );
 };

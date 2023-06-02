@@ -17,12 +17,23 @@ const IngredientesList = () => {
   const deleteIngrediente = async (id) => {
     try {
         await axios.delete(
-        `http://localhost:3000/api/ingredientes/${id}`
-      );
+        `http://localhost:3000/api/ingredientes/${id}`, {
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            }
+        });
       dispatch(showNotification("success", "Ingrediente eliminado"))
       dispatch(fetchIngredientes());
     } catch (error) {
        if (error.response.status === 409) dispatch(showNotification("error", "Ingrediente en uso"))
+         if (error.response.status === 401)
+        dispatch(
+          showNotification(
+            "error",
+            "No estas autorizado para realizar esta acción"
+          )
+        );
       dispatch(fetchIngredientes());
       console.log(error.response);
     }

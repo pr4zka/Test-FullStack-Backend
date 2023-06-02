@@ -9,9 +9,6 @@ import { useEffect } from "react";
 import { IngredientesAdd } from "../components/ingredientes/IngredientesAdd";
 import axios from "axios";
 import { FaEdit } from "react-icons/fa";
-import { MdDeleteForever } from "react-icons/md";
-import {deletePizza} from '../api/pizza'
-import {showNotification} from '../feactures/toastify/toastifySlice'
 
 export const PizzasDetail = () => {
   const { id } = useParams();
@@ -38,17 +35,6 @@ export const PizzasDetail = () => {
     }
   };
 
-  const handleDeletePizza = async (id) => {
-    try {
-      await deletePizza(id);
-      dispatch(showNotification("success", "Pizza eliminada con exito"))
-      navigate("/");
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-
   return (
     <div>
       <div className="bg-zinc-200 rounded-lg shadow-lg shadow-gray-400 p-8 h-4/6 w-4/12 m-auto py-10 px-10 mt-24">
@@ -61,12 +47,6 @@ export const PizzasDetail = () => {
             onClick={() => navigate(`/pizzas/edit/${pizzaDetalle.id}`)}
           >
             <FaEdit className="text-2xl" />
-          </button>
-          <button
-            className="text-lg rounded-lg px-2 mt-3 hover:text-red-300"
-            onClick={() => handleDeletePizza(pizzaDetalle.id)}
-          >
-            <MdDeleteForever className="text-2xl" />
           </button>
         </div>
         {pizzaDetalle.ingredientes.length > 0 ? (

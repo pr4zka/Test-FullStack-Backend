@@ -16,6 +16,7 @@ function Pizzas() {
   useEffect(() => {
     dispatch(fetchPizzas());
     dispatch(fetchIngredientes());
+   
   }, [dispatch]);
   return (
     <>

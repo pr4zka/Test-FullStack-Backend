@@ -20,20 +20,41 @@ const PizzasForm = () => {
 
   const handleCreatePizza = async (values) => {
     try {
-      await axios.post(`http://localhost:3000/api/pizzas`, values);
+      await axios.post(`http://localhost:3000/api/pizzas`, values, {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Authorization-Basic": `Basic ${localStorage.getItem("basicToken")}`,
+        },
+      });
       dispatch(showNotification("success", "Pizza creada correctamente"));
+      navigate("/");
     } catch (error) {
-      console.log(error);
+      console.log(error.response.status);
+      if (error.response.status === 401)
+        dispatch(
+          showNotification(
+            "error",
+            "No estas autorizado para realizar esta acción"
+          )
+        );
     }
   };
 
   const handleUpdatePizza = async (id, values) => {
     try {
       const res = await updatedPizza(id, values);
-      console.log(res);
+      dispatch(showNotification("success", "Pizza actualizada correctamente"));
       navigate("/");
     } catch (error) {
-      console.log(error);
+      console.log(error.response.status);
+      if (error.response.status === 401)
+        dispatch(
+          showNotification(
+            "error",
+            "No estas autorizado para realizar esta acción"
+          )
+        );
     }
   };
 
@@ -46,7 +67,7 @@ const PizzasForm = () => {
           nombre: res.data.pizzas.nombre,
           precio: res.data.pizzas.precio,
           estado: res.data.pizzas.estado,
-        })
+        });
       } catch (error) {
         console.log(error);
       }
@@ -63,7 +84,6 @@ const PizzasForm = () => {
             onSubmit={async (values, action) => {
               if (params.id) {
                 await handleUpdatePizza(params.id, values);
-                dispatch(showNotification("success", "Pizza actualizada correctamente"))
               } else {
                 await handleCreatePizza(values);
               }
@@ -102,7 +122,7 @@ const PizzasForm = () => {
                     value={values.estado}
                     className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   >
-                    <option value="" disabled>
+                    <option value="" disabled className="text-black">
                       Seleccione el estado
                     </option>
                     <option value="Activo">Activo</option>

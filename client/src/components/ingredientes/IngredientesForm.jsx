@@ -25,7 +25,12 @@ export const IngredientesForm = () => {
     try {
       const response = await axios.post(
         `http://localhost:3000/api/ingredientes`,
-        values
+        values, {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          }
+        }
       );
       console.log("response", response.data);
       dispatch(fetchIngredientes());
@@ -37,9 +42,17 @@ export const IngredientesForm = () => {
   const handleUpdate = async (id, values) => {
     try {
       await updatedIngrediente(id, values);
+      dispatch(showNotification("success", "Ingrediente actualizado"))
       navigate("/ingredientes");
     } catch (error) {
       console.log(error);
+        if (error.response.status === 401)
+        dispatch(
+          showNotification(
+            "error",
+            "No estas autorizado para realizar esta acción"
+          )
+        );
     }
   };
 
@@ -63,7 +76,7 @@ export const IngredientesForm = () => {
         onSubmit={async (values, actions) => {
           if (params.id) {
             await handleUpdate(params.id, values);
-            dispatch(showNotification("success", "Ingrediente actualizado"));
+            navigate("/ingredientes");
           } else {
             await handleCreate(values);
           }
