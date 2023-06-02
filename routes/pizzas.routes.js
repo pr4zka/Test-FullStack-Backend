@@ -1,7 +1,7 @@
 
 const { Router } = require("express");
 const pizzaController = require("../controllers/pizza.controller");
-const {authenticateToken, checkType} = require("../middlewares/tokenHandle")
+const {authenticateToken, checkType } = require("../middlewares/tokenHandle")
 const router = Router();
 
 /**
@@ -154,7 +154,14 @@ router.get("/:id/detalle", pizzaController.getDetalles)
  *                   type: string
  *                   description: Mensaje de error
  */
-router.post("/", [ checkType ], pizzaController.createPizza);
+router.post("/", (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    checkType(req, res, next); 
+  } else {
+    authenticateToken(req, res, next); 
+  }
+}, pizzaController.createPizza)
 
 /**
  * @swagger
@@ -320,6 +327,13 @@ router.post("/:pizzaId/remove-ingrediente/:ingredienteId", pizzaController.remov
  *                   type: string
  *                   description: Mensaje de error
  */
-router.patch("/:id", checkType, pizzaController.updatePizza);
+router.patch("/:id",(req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    checkType(req, res, next); 
+  } else {
+    authenticateToken(req, res, next); 
+  }
+}, pizzaController.updatePizza);
 
 module.exports = router;

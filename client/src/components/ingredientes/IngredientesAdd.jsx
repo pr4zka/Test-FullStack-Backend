@@ -41,7 +41,9 @@ export const IngredientesAdd = () => {
             onChange={handleIngredienteChange}
           >
             <option value="">Seleccionar ingrediente</option>
-            {ingrediente && ingrediente.result.length > 0 ? (
+            {ingrediente &&
+            ingrediente.result &&
+            ingrediente.result.length > 0 ? (
               ingrediente.result.map((ingre, i) => (
                 <option key={i} value={ingre.id}>
                   {ingre.nombre}

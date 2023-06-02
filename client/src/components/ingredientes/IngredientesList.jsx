@@ -3,10 +3,10 @@ import { fetchIngredientes } from "../../feactures/ingredientes/ingredientesSlic
 import { useDispatch, useSelector } from "react-redux";
 import { MdDeleteForever } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { IngredientesForm } from "./IngredientesForm";
 import {showNotification} from '../../feactures/toastify/toastifySlice'
+import {deleteIngredient} from '../../api/ingrediente'
 
 const IngredientesList = () => {
   const dispatch = useDispatch();
@@ -16,13 +16,7 @@ const IngredientesList = () => {
 
   const deleteIngrediente = async (id) => {
     try {
-        await axios.delete(
-        `http://localhost:3000/api/ingredientes/${id}`, {
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            }
-        });
+        await deleteIngredient(id);
       dispatch(showNotification("success", "Ingrediente eliminado"))
       dispatch(fetchIngredientes());
     } catch (error) {

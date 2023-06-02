@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const ingredienteController = require("../controllers/ingredientes.controller");
-const { checkType } = require("../middlewares/tokenHandle");
+const { checkType, authenticateToken } = require("../middlewares/tokenHandle");
 const router = Router();
 
 /**
@@ -125,8 +125,30 @@ const router = Router();
  */
 router.get("/", ingredienteController.getAll);
 router.get("/:id", ingredienteController.getById);
-router.post("/", checkType, ingredienteController.createIngrediente);
-router.patch("/:id", checkType, ingredienteController.updateIngrediente);
-router.delete("/:id", checkType, ingredienteController.deleteIngrediente);
+router.post("/",(req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    checkType(req, res, next); 
+  } else {
+    authenticateToken(req, res, next); 
+  }
+}, ingredienteController.createIngrediente);
+router.patch("/:id",(req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    checkType(req, res, next); 
+  } else {
+    authenticateToken(req, res, next); 
+  }
+}, ingredienteController.updateIngrediente);
+
+router.delete("/:id",(req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    checkType(req, res, next); 
+  } else {
+    authenticateToken(req, res, next); 
+  }
+}, ingredienteController.deleteIngrediente);
 
 module.exports = router;

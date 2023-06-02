@@ -11,6 +11,7 @@ export const Navbar = () => {
     setTimeout(() => {
       localStorage.setItem("isAuth", "false");
       localStorage.removeItem("token");
+      localStorage.removeItem("basicToken");
       setIsAuth(false);
       setIsLoading(false); 
     }, 1000);

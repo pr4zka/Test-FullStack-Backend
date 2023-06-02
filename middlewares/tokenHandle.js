@@ -5,11 +5,29 @@ const { comparePass } = require("./encryptPass");
 const secret = "mySecretToken";
 const accessTokenExpiration = "6h";
 
+const checkType = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(" ")[1];
+  if (!token) return res.status(401).json({ msg: "No se encontró token" });
+  try {
+    const decoded = verifyToken(token);
+    console.log(decoded)
+    if (decoded.type === "NORMAL") {
+      res.status(401).json({ msg: "No estas autorizado" });
+    } else {
+      next();
+    }
+  } catch (error) {
+    res.status(401).json({ msg: "Token invalido" });
+  }
+};
+
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
+   console.log(authHeader)
   if (!authHeader || !authHeader.startsWith("Basic ")) {
     return res.sendStatus(401);
-  }
+  } 
 
   const basicToken = authHeader.slice(6);
 
@@ -25,7 +43,11 @@ function authenticateToken(req, res, next) {
         const comparePassword = comparePass(password, user.password);
         if (!comparePassword)
           return res.status(400).json({ msg: "Contraseña incorrecta" });
+          if(user.dataValues.tipo === "NORMAL"){
+            return res.status(401).json({ msg: "No estas autorizado" });
+          }
         req.user = user;
+        console.log(user.dataValues.tipo)
         next();
       }
     })
@@ -34,8 +56,6 @@ function authenticateToken(req, res, next) {
       res.status(500).json({ message: "Internal server error" });
     });
 }
-
-
 
 
 // Función que genera un Basic Token
@@ -64,21 +84,7 @@ const verifyToken = (token) => {
   }
 };
 
-const checkType = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader && authHeader.split(" ")[1];
-  if (!token) return res.status(401).json({ msg: "No se encontró token" });
-  try {
-    const decoded = verifyToken(token);
-    if (decoded.tipo !== "STAFF") {
-      next();
-    } else {
-      res.status(401).json({ msg: "No estas autorizado" });
-    }
-  } catch (error) {
-    res.status(401).json({ msg: "Token invalido" });
-  }
-};
+
 
 module.exports = {
   createTokenJWT,

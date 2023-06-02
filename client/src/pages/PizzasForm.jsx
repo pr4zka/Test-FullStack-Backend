@@ -1,11 +1,10 @@
 import { Input } from "@nextui-org/react";
-import axios from "axios";
 import { Form, Formik } from "formik";
 import { showNotification } from "../feactures/toastify/toastifySlice";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { updatedPizza, getPizza } from "../api/pizza";
+import { updatedPizza, getPizza, createPizza } from "../api/pizza";
 
 const PizzasForm = () => {
   const [pizza, setPizza] = useState({
@@ -20,13 +19,7 @@ const PizzasForm = () => {
 
   const handleCreatePizza = async (values) => {
     try {
-      await axios.post(`http://localhost:3000/api/pizzas`, values, {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Authorization-Basic": `Basic ${localStorage.getItem("basicToken")}`,
-        },
-      });
+      const res = await createPizza(values);
       dispatch(showNotification("success", "Pizza creada correctamente"));
       navigate("/");
     } catch (error) {

@@ -5,13 +5,7 @@ const { Op } = require("sequelize");
 const ingredienteController = {
     getAll: async (req, res) => {
         try {
-            const result = await ingredientes.findAll({
-                where: {
-                    estado: {
-                        [Op.eq]: "Activo",
-                    },
-                },
-            });
+            const result = await ingredientes.findAll();
             res.status(200).json({ msg: "Lista de ingredientes", result });
         } catch (error) {
             res.status(500).json({ msg: "Error server", error });
