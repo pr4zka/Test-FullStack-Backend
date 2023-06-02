@@ -23,7 +23,7 @@ export const IngredientesForm = () => {
 
   const handleCreate = async (values) => {
     try {
-      const response = await axios.post(
+         await axios.post(
         `http://localhost:3000/api/ingredientes`,
         values, {
           headers: {
@@ -32,10 +32,9 @@ export const IngredientesForm = () => {
           }
         }
       );
-      console.log("response", response.data);
       dispatch(fetchIngredientes());
     } catch (error) {
-      console.log("error", error);
+      dispatch(showNotification("error", "Internal server error"));
     }
   };
 
@@ -45,7 +44,6 @@ export const IngredientesForm = () => {
       dispatch(showNotification("success", "Ingrediente actualizado"))
       navigate("/ingredientes");
     } catch (error) {
-      console.log(error);
         if (error.response.status === 401)
         dispatch(
           showNotification(

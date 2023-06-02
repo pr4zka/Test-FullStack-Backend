@@ -47,7 +47,7 @@ export const Login = () => {
        dispatch(showNotification('success', 'Usuario autenticado correctamente'))
        
     } catch (error) {
-      console.log(error)
+       dispatch(showNotification('error', 'Internal server error'))
     }
   }
 };

@@ -29,7 +29,6 @@ const IngredientesList = () => {
           )
         );
       dispatch(fetchIngredientes());
-      console.log(error.response);
     }
   };
 

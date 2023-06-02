@@ -14,6 +14,7 @@ export const PizzasDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isAuth = localStorage.getItem("isAuth")
   const pizzaDetalle = useSelector(selectPizzaDetalle);
 
   useEffect(() => {
@@ -45,6 +46,7 @@ export const PizzasDetail = () => {
           <button
             className="text-lg rounded-lg px-2 mt-3 hover:text-green-300"
             onClick={() => navigate(`/pizzas/edit/${pizzaDetalle.id}`)}
+            disabled={isAuth === "false"}
           >
             <FaEdit className="text-2xl" />
           </button>

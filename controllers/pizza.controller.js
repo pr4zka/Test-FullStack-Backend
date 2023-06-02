@@ -52,6 +52,9 @@ const pizzaController = {
       const pizzaUpdated = await pizza.update(req.body, {
         where: { id: pizzaId },
       });
+      if (req.body.estado === "Inactivo") {
+        await result.setIngredientes([]);
+      }
       res.status(200).json({ msg: "Pizza actualizada", pizzaUpdated });
     } catch (error) {
       res.status(500).json({ msg: "Error server", error });

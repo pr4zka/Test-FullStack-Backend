@@ -10,6 +10,7 @@ import { AiOutlineUnorderedList } from "react-icons/ai";
 function Pizzas() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isAuth = localStorage.getItem("isAuth");
 
   const pizzas = useSelector((state) => state.pizzas);
 
@@ -29,6 +30,7 @@ function Pizzas() {
               <button
                 className="inline-flex sm:ml-3 mt-4 sm:mt-0 items-start justify-start px-6 py-3 bg-indigo-700 hover:bg-indigo-600 focus:outline-none rounded"
                 onClick={() => navigate("pizzas/new")}
+                disabled={isAuth === "false"}
               >
                 <IoIosAddCircleOutline className="text-white text-[1.2rem] mr-2 mt-[-2px]" />
                 <p className="text-sm font-medium leading-none text-white">
@@ -38,6 +40,7 @@ function Pizzas() {
               <button
                 className="inline-flex sm:ml-3 mt-4 sm:mt-0 items-start justify-start px-6 py-3 bg-indigo-700 hover:bg-indigo-600 focus:outline-none rounded"
                 onClick={() => navigate("/ingredientes")}
+                disabled={isAuth === "false"}
               >
                 <AiOutlineUnorderedList className="text-white text-[1.2rem] mr-2 mt-[-2px]" />
                 <p className="text-sm font-medium leading-none text-white">
@@ -62,7 +65,7 @@ function Pizzas() {
             </div>
           ))
         ) : (
-          <p>No hay pizzas disponibles</p>
+          <p className="text-indigo-300 m-auto mt-20 text-lg">No hay pizzas disponibles</p>
         )}
       </div>
     </>

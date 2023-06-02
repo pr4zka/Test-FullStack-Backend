@@ -6,25 +6,29 @@ const secret = "mySecretToken";
 const accessTokenExpiration = "6h";
 
 const checkType = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader && authHeader.split(" ")[1];
-  if (!token) return res.status(401).json({ msg: "No se encontró token" });
-  try {
-    const decoded = verifyToken(token);
-    console.log(decoded)
-    if (decoded.type === "NORMAL") {
-      res.status(401).json({ msg: "No estas autorizado" });
-    } else {
-      next();
-    }
-  } catch (error) {
-    res.status(401).json({ msg: "Token invalido" });
-  }
+	const authHeader = req.headers.authorization;
+	const token = authHeader && authHeader.split(" ")[1];
+	const type = authHeader && authHeader.split(" ")[0];
+	if (!token) return res.status(401).json({ msg: "No se encontró token" });
+	try {
+		if (type === "Basic") {
+			const decoded = Buffer.from(token, "base64").toString("ascii");
+			const [username, password] = decoded.split(":");
+		} else {
+			const decoded = verifyToken(token);
+			if (decoded.tipo !== "STAFF") {
+				next();
+			} else {
+				res.status(401).json({ msg: "No estas autorizado" });
+			}
+		}
+	} catch (error) {
+		res.status(401).json({ msg: "Token invalido" });
+	}
 };
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
-   console.log(authHeader)
   if (!authHeader || !authHeader.startsWith("Basic ")) {
     return res.sendStatus(401);
   } 

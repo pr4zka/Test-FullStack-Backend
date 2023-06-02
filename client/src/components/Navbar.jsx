@@ -1,19 +1,27 @@
-import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
   const [isAuth, setIsAuth] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    setIsLoading(true); 
-
+    setIsLoading(true);
+    navigate("/login");
     setTimeout(() => {
       localStorage.setItem("isAuth", "false");
-      localStorage.removeItem("token");
-      localStorage.removeItem("basicToken");
       setIsAuth(false);
-      setIsLoading(false); 
+      setIsLoading(false);
+    }, 1000);
+  };
+
+  const handleLogin = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      localStorage.setItem("isAuth", "true");
+      setIsAuth(true);
+      setIsLoading(false);
     }, 1000);
   };
 
@@ -36,9 +44,9 @@ export const Navbar = () => {
             Home
           </Link>
         </li>
-        {isLoading ? (
-          <li>Cerrando Sesión...</li>
-        ) : isAuth ? (
+        {isLoading && <li>Cerrando Sesión...</li>}
+
+        {isAuth ? (
           <li>
             <button
               onClick={handleLogout}
@@ -49,12 +57,12 @@ export const Navbar = () => {
           </li>
         ) : (
           <li>
-            <Link
-              to="/login"
+            <button
+              onClick={handleLogin}
               className="bg-indigo-700 text-white text-sm font-medium px-2 py-1 hover:bg-indigo-600 focus:outline-none rounded"
             >
               Login
-            </Link>
+            </button>
           </li>
         )}
       </ul>

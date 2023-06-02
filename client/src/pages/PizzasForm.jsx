@@ -19,11 +19,10 @@ const PizzasForm = () => {
 
   const handleCreatePizza = async (values) => {
     try {
-      const res = await createPizza(values);
+       await createPizza(values);
       dispatch(showNotification("success", "Pizza creada correctamente"));
       navigate("/");
     } catch (error) {
-      console.log(error.response.status);
       if (error.response.status === 401)
         dispatch(
           showNotification(
@@ -36,11 +35,10 @@ const PizzasForm = () => {
 
   const handleUpdatePizza = async (id, values) => {
     try {
-      const res = await updatedPizza(id, values);
+      await updatedPizza(id, values);
       dispatch(showNotification("success", "Pizza actualizada correctamente"));
       navigate("/");
     } catch (error) {
-      console.log(error.response.status);
       if (error.response.status === 401)
         dispatch(
           showNotification(
