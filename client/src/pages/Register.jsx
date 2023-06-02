@@ -1,13 +1,21 @@
 import axios from "axios";
 import { Formik, Form, Field } from "formik";
+import {showNotification} from '../feactures/toastify/toastifySlice'
+import { useDispatch } from "react-redux";
+import {useNavigate} from 'react-router-dom'
 
 export const Register = () => {
+
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
   const handleSubmit = async (values) => {
     try {
-      const res = await axios.post("http://localhost:3000/api/auth/register", values);
-      console.log(res.data);
+      await axios.post("http://localhost:3000/api/auth/register", values);
+      dispatch(showNotification('success', 'Usuario Registrado'))
+      navigate('/login')
     } catch (error) {
-      console.log(error);
+      dispatch(showNotification('error', 'Error al registrar usuario'))
     }
   };
 
@@ -16,8 +24,9 @@ export const Register = () => {
       <h1>Register</h1>
       <Formik
         initialValues={{ nombre: "", password: "", tipo: "" }}
-        onSubmit={async (values) => {
+        onSubmit={async (values, action) => {
           await handleSubmit(values);
+          action.resetForm();
         }}
       >
         <Form>

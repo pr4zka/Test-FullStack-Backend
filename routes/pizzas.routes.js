@@ -154,7 +154,7 @@ router.get("/:id/detalle", pizzaController.getDetalles)
  *                   type: string
  *                   description: Mensaje de error
  */
-router.post("/", [checkType, authenticateToken], pizzaController.createPizza);
+router.post("/", [ checkType ], pizzaController.createPizza);
 
 /**
  * @swagger

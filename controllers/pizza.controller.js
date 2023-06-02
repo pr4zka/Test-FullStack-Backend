@@ -1,10 +1,17 @@
 const pizza = require("../models/pizza");
 const { ingredientes } = require("../models/ingredientes");
+const { Op } = require("sequelize");
 
 const pizzaController = {
   getAll: async (req, res) => {
     try {
-      const pizzas = await pizza.findAll({ as: "pizza_ingredientes" });
+      const pizzas = await pizza.findAll({
+        where: {
+          estado: {
+            [Op.eq]: "Activo",
+          },
+        },
+      });
       res.status(200).json({ msg: "Lista de pizzas", pizzas });
     } catch (error) {
       res.status(500).json({ msg: "Error server", error });
