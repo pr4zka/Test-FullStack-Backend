@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AiOutlineDelete } from "react-icons/ai";
 import {
   fetchPizzaDetalle,
@@ -8,11 +8,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { IngredientesAdd } from "../components/ingredientes/IngredientesAdd";
 import axios from "axios";
+import { FaEdit } from "react-icons/fa";
 
 export const PizzasDetail = () => {
 
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const pizzaDetalle = useSelector(selectPizzaDetalle);
 
 
@@ -53,6 +55,13 @@ export const PizzasDetail = () => {
                 </li>
               ))}
             </ul>
+            <div className="flex justify-end">
+              <button className="text-lg rounded-lg px-2 mt-3 hover:text-green-300"
+              //  onClick={() => navigate(`/pizzas/edit${id}`)}
+              >
+                 <FaEdit className="text-2xl" />
+              </button>
+            </div>
           </div>
         ) : (
           <p>No hay ingredientes disponibles</p>

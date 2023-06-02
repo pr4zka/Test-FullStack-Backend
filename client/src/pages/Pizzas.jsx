@@ -1,98 +1,24 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { IoIosAddCircleOutline } from "react-icons/io";
-import ModalCustom from "../common/Modal";
-import { Formik } from "formik";
-import { Input } from "@nextui-org/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { fetchPizzas } from "../feactures/pizzas/pizzasSlice";
 
 import { fetchIngredientes } from "../feactures/ingredientes/ingredientesSlice";
-import axios from "axios";
+import { AiOutlineUnorderedList } from "react-icons/ai";
 
 function Pizzas() {
-  // const [show, setShow] = useState();
-  const [visible, setVisible] = useState(false);
-  const [pizza, setPizza] = useState({
-    nombre: "",
-    precio: "",
-    estado: "",
-  });
-  // const [action, setAction] = useState("created");
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const pizzas = useSelector((state) => state.pizzas);
-
-  const handleCreatePizza = async (values) => {
-    // try {
-    //   const res = await axios.post(`http://localhost:3000/api/pizzas`, values);
-    //   console.log(res)
-    // } catch (error) {
-    //   console.log(error);
-    // }
-  };
-
-  const createdAndEditPizza = () => {
-    return (
-      <>
-        <Formik
-          initialValues={pizza}
-          onSubmit={(values) => {
-            console.log(values)
-            // handleCreatePizza(values);
-          }}
-        >
-          {({ values, handleChange, handleBlur, handleSubmit }) => (
-            <form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
-                <Input
-                  type="text"
-                  name="nombre"
-                  placeholder="Nombre"
-                  onChange={handleChange}
-                  value={values.nombre}
-                  className="mt-1 block w-full border-0 p-1"
-                />
-                <Input
-                  type="text"
-                  name="precio"
-                  placeholder="Precio"
-                  onChange={handleChange}
-                  value={values.precio}
-                  className="mt-1 block w-full border-0 p-1"
-                />
-                <select
-                  name="estado"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.estado}
-                  className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                >
-                  <option value="" disabled>
-                    Seleccione el estado
-                  </option>
-                  <option value="1">Activo</option>
-                  <option value="0">Inactivo</option>
-                </select>
-              </div>
-            </form>
-          )}
-        </Formik>
-      </>
-    );
-  };
-
-  const handleOpen = () => {
-    setVisible(true);
-  };
+  console.log("pizzas", pizzas)
 
   useEffect(() => {
     dispatch(fetchPizzas());
     dispatch(fetchIngredientes());
-  }, []);
+  }, [dispatch]);
   return (
     <>
       <div className="w-full sm:px-6">
@@ -104,11 +30,20 @@ function Pizzas() {
             <div>
               <button
                 className="inline-flex sm:ml-3 mt-4 sm:mt-0 items-start justify-start px-6 py-3 bg-indigo-700 hover:bg-indigo-600 focus:outline-none rounded"
-                onClick={handleOpen}
+                onClick={() => navigate("pizzas/new")}
               >
                 <IoIosAddCircleOutline className="text-white text-[1.2rem] mr-2 mt-[-2px]" />
                 <p className="text-sm font-medium leading-none text-white">
                   Agregar Pizza
+                </p>
+              </button>
+              <button
+                className="inline-flex sm:ml-3 mt-4 sm:mt-0 items-start justify-start px-6 py-3 bg-indigo-700 hover:bg-indigo-600 focus:outline-none rounded"
+                onClick={() => navigate("/ingredientes")}
+              >
+                <AiOutlineUnorderedList className="text-white text-[1.2rem] mr-2 mt-[-2px]" />
+                <p className="text-sm font-medium leading-none text-white">
+                  Lista de Ingredientes
                 </p>
               </button>
             </div>
@@ -132,28 +67,6 @@ function Pizzas() {
           <p>No hay pizzas disponibles</p>
         )}
       </div>
-
-      <ModalCustom
-        visible={visible}
-        setVisible={setVisible}
-        config={{
-          title: "Agregar Pizza",
-          botones: {
-            aceptar: "Guardar",
-            cancelar: "Cancelar",
-          },
-          function: {
-            aceptar: () => {
-              handleCreatePizza();
-            },
-            cancelar: () => {
-              console.log("cancelar");
-            },
-          },
-        }}
-      >
-        {createdAndEditPizza()}
-      </ModalCustom>
     </>
   );
 }

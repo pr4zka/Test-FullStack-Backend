@@ -4,19 +4,17 @@ import { fetchIngredientes } from "../../feactures/ingredientes/ingredientesSlic
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { fetchPizzaDetalle } from "../../feactures/pizzas/pizzasSlice";
-import { IngredientesForm } from "../ingredientes/IngredientesForm";
 
 export const IngredientesAdd = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
-  const ingredientes = useSelector((state) => state.ingredientes);
-  const ingrediente = ingredientes.result;
+  const ingrediente = useSelector((state) => state.ingredientes);
   const [selectedIngrediente, setSelectedIngrediente] = useState("");
 
   const handleIngredienteChange = (event) => {
     setSelectedIngrediente(event.target.value);
   };
-
+ console.log("selectedIngrediente", selectedIngrediente)
   const handleAgregarClick = async () => {
     try {
       const response = await axios.post(
@@ -42,8 +40,8 @@ export const IngredientesAdd = () => {
             value={selectedIngrediente}
             onChange={handleIngredienteChange}
           >
-            {ingrediente && ingrediente.length > 0 ? (
-              ingrediente.map((ingre, i) => (
+            {ingrediente && ingrediente.result.length > 0 ? (
+              ingrediente.result.map((ingre, i) => (
                 <option key={i} value={ingre.id}>
                   {ingre.nombre}
                 </option>
@@ -53,12 +51,11 @@ export const IngredientesAdd = () => {
             )}
           </select>
         </form>
-        <button onClick={handleAgregarClick} className="px-4 mx-2 bg-indigo-300 rounded hover:bg-indigo-600">
+        <button onClick={handleAgregarClick} className="px-4 mx-2 bg-indigo-500 rounded hover:bg-indigo-600 text-white">
           Agregar
         </button>
       </div>
       <div className="my-9 mx-6 ml-24">
-        <IngredientesForm />
       </div>
     </div>
   );

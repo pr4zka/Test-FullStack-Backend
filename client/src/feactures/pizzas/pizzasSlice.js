@@ -4,7 +4,7 @@ import { createSelector } from "reselect";
 
 export const fetchPizzas = createAsyncThunk(
   "pizzas/fetchPizzas",
-  async (ciuades, thunkAPI) => {
+  async () => {
     const response = await getPizzas();
     return response.data.pizzas;
   }
@@ -12,7 +12,7 @@ export const fetchPizzas = createAsyncThunk(
 
 export const fetchPizzaDetalle = createAsyncThunk(
   "pizzas/fetchPizzaDetalle",
-  async (id, thunkAPI) => {
+  async (id) => {
     const response = await getPizzaDetalle(id);
     console.log(response.data);
     return response.data;
@@ -21,7 +21,7 @@ export const fetchPizzaDetalle = createAsyncThunk(
 
 export const createPizza = createAsyncThunk(
   "pizzas/createPizza",
-  async (pizzaData, thunkAPI) => {
+  async (pizzaData) => {
     const response = await createPizza(pizzaData);
     return response.data;
   }
@@ -29,7 +29,7 @@ export const createPizza = createAsyncThunk(
 
 export const addIngredientes = createAsyncThunk(
   "pizzas/addIngrediente",
-  async (pizzaId, ingredienteId, thunkAPI) => {
+  async (pizzaId, ingredienteId) => {
     const response = await addIngrediente(pizzaId, ingredienteId);
     console.log(response);
     return response.data;

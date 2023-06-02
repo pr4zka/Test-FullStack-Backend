@@ -3,9 +3,24 @@ import { Formik, Form } from "formik";
 import { fetchIngredientes } from "../../feactures/ingredientes/ingredientesSlice";
 import { useDispatch } from "react-redux";
 import axios from "axios";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getIngrediente, updatedIngrediente } from "../../api/ingrediente";
+import { showNotification } from "../../feactures/toastify/toastifySlice";
 
 export const IngredientesForm = () => {
+  const [ing, setIng] = useState({
+    nombre: "",
+    categoria: "",
+  });
+
   const dispatch = useDispatch();
+  const params = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const isEditPage = location.pathname.includes("/edit");
+
   const handleCreate = async (values) => {
     try {
       const response = await axios.post(
@@ -19,22 +34,43 @@ export const IngredientesForm = () => {
     }
   };
 
-  
+  const handleUpdate = async (id, values) => {
+    try {
+      await updatedIngrediente(id, values);
+      navigate("/ingredientes");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
+  useEffect(() => {
+    const loadIng = async () => {
+      if (isEditPage) {
+        const res = await getIngrediente(params.id);
+        setIng({
+          nombre: res.data.result.nombre,
+          categoria: res.data.result.categoria,
+        });
+      }
+    };
+    loadIng();
+  }, [params.id]);
   return (
     <div className="">
       <Formik
-        initialValues={{
-          nombre: "",
-          categoria: "",
-        }}
+        initialValues={ing}
         enableReinitialize={true}
-        onSubmit={(values, actions) => {
-          handleCreate(values);
+        onSubmit={async (values, actions) => {
+          if (params.id) {
+            await handleUpdate(params.id, values);
+            dispatch(showNotification("success", "Ingrediente actualizado"));
+          } else {
+            await handleCreate(values);
+          }
           actions.resetForm();
         }}
       >
-        {({ values, handleChange, handleSubmit }) => (
+        {({ values, handleChange, handleSubmit, isSubmitting }) => (
           <Form onSubmit={handleSubmit}>
             <div className="">
               <Input
@@ -45,16 +81,21 @@ export const IngredientesForm = () => {
                 value={values.nombre}
                 className="mt-1 block w-full border-0 p-1"
               />
-              <select name="categoria" onChange={handleChange} value={values.categoria}>
+              <select
+                name="categoria"
+                onChange={handleChange}
+                value={values.categoria}
+              >
                 <option value="">Seleccione una categoria</option>
                 <option value="Basico">Basico</option>
                 <option value="Premium">Premium</option>
               </select>
-              <button className="bg-indigo-300 mx-2 px-4 rounded-sm hover:bg-indigo-600">
-                Crear
-              </button>
-              <button className="bg-indigo-300 mx-2 px-4 rounded-sm hover:bg-indigo-600">
-                Editar
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-indigo-500 ml-2 px-2 py-1 text-white rounded-md"
+              >
+                {isSubmitting ? "Guardando" : "Guardar"}
               </button>
             </div>
           </Form>
