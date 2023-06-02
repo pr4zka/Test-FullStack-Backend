@@ -1,18 +1,18 @@
-version: '3'
+version: "3"
 
 services:
   backend:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
     ports:
       - "3000:3000"
-    environment:
-    - DB_HOST=host.docker.internal
+    network_mode: "host"
 
   frontend:
     build:
       context: ./client
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
     ports:
-      - "4000:4000"
+      - "5173:5173"
+    network_mode: "host"

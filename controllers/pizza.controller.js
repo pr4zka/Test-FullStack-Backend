@@ -25,6 +25,12 @@ const pizzaController = {
     if (!nombre || !precio || !estado)
       return res.status(400).json({ msg: "Debe llenar todos los campos" });
     try {
+      const existingPizza = await pizza.findOne({ where: { nombre } });
+      if (existingPizza) {
+        return res
+          .status(400)
+          .json({ msg: "Ya existe una pizza con el mismo nombre" });
+      }
       const newPizza = await pizza.create({ nombre, precio, estado });
       res.status(201).json({ msg: "Pizza creada", newPizza });
     } catch (error) {
@@ -44,20 +50,9 @@ const pizzaController = {
       res.status(500).json({ msg: "Error server", error });
     }
   },
-  deletePizza: async (req, res) => {
-    try {
-      const pizzaId = req.params.id;
-      const result = await pizza.findByPk(pizzaId);
-      if (!result) return res.status(404).json({ msg: "Pizza no encontrada" });
-      await pizza.destroy({ where: { id: pizzaId } });
-      res.status(200).json({ msg: "Pizza borrada" });
-    } catch (error) {
-      res.status(500).json({ msg: "Error server", error });
-    }
-  },
   addIngredientes: async (req, res) => {
     const { pizzaId, ingredienteId } = req.params;
-    console.log(pizzaId, ingredienteId)
+    console.log(pizzaId, ingredienteId);
 
     try {
       const resultPizza = await pizza.findByPk(pizzaId);

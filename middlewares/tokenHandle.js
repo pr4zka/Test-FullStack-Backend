@@ -5,25 +5,23 @@ const { comparePass } = require("./encryptPass");
 const secret = "mySecretToken";
 const accessTokenExpiration = "6h";
 
-// Middleware que verifica la autenticación con Basic Token
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+  if (!authHeader || !authHeader.startsWith("Basic ")) {
+    return res.sendStatus(401);
+  }
 
-  if (token == null) return res.sendStatus(401);
+  const basicToken = authHeader.slice(6);
 
-  // Decodificamos el token en Base64 y comparamos las credenciales de usuario
-  const decoded = Buffer.from(token, "base64").toString("ascii");
+  const decoded = Buffer.from(basicToken, "base64").toString("ascii");
   const [username, password] = decoded.split(":");
 
-  // Verificamos las credenciales con Sequelize (asumiendo que tenemos un modelo User)
   usuario
     .findOne({ where: { nombre: username } })
     .then((user) => {
       if (!user) {
         return res.sendStatus(403);
       } else {
-        // Verificar la contraseña del usuario aquí usando bcrypt o alguna otra biblioteca
         const comparePassword = comparePass(password, user.password);
         if (!comparePassword)
           return res.status(400).json({ msg: "Contraseña incorrecta" });
@@ -36,6 +34,9 @@ function authenticateToken(req, res, next) {
       res.status(500).json({ message: "Internal server error" });
     });
 }
+
+
+
 
 // Función que genera un Basic Token
 function generateBasicToken(username, password) {
@@ -84,6 +85,6 @@ module.exports = {
   createRefreshToken,
   verifyToken,
   checkType,
-//   authenticateToken,
+  authenticateToken,
   generateBasicToken,
 };
