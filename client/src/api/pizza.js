@@ -4,6 +4,7 @@ import {verify} from '../checkType/verify'
 export const getPizzas = async () => await axios.get("http://localhost:3000/api/pizzas")
 export const getPizzaDetalle = async (id) => await axios.get(`http://localhost:3000/api/pizzas/${id}/detalle`)
 export const getPizza = async (id) => await axios.get(`http://localhost:3000/api/pizzas/${id}`)
+
 export const createPizza = async (pizza) => {
     const basicToken = localStorage.getItem('basicToken');
     const token = localStorage.getItem('token');
@@ -15,9 +16,12 @@ export const createPizza = async (pizza) => {
 };
 
 export const addIngrediente = async (pizzaId, ingredienteId) => await axios.post(`http://localhost:3000/api/pizzas/${pizzaId}/ingredientes/${ingredienteId}`)
+
 export const updatedPizza = async (id, pizza) => {
  const basicToken = localStorage.getItem('basicToken');
   const token = localStorage.getItem('token');
+  console.log("basicToken", basicToken)
+  console.log("token", token)
   const headers = {
     Accept: 'application/json',
     Authorization: verify(basicToken, token)

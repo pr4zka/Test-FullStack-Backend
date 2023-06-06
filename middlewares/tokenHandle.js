@@ -1,43 +1,62 @@
 const usuario = require("../models/usuario");
-const { sign, verify } = require("jsonwebtoken");
+const { sign, verify, decode } = require("jsonwebtoken");
 const { comparePass } = require("./encryptPass");
 
 const secret = "mySecretToken";
 const accessTokenExpiration = "6h";
 
 const checkType = (req, res, next) => {
-	const authHeader = req.headers.authorization;
-	const token = authHeader && authHeader.split(" ")[1];
-	const type = authHeader && authHeader.split(" ")[0];
-	if (!token) return res.status(401).json({ msg: "No se encontró token" });
-	try {
-		if (type === "Basic") {
-			const decoded = Buffer.from(token, "base64").toString("ascii");
-			const [username, password] = decoded.split(":");
-		} else {
-			const decoded = verifyToken(token);
-			if (decoded.tipo !== "STAFF") {
-				next();
-			} else {
-				res.status(401).json({ msg: "No estas autorizado" });
-			}
-		}
-	} catch (error) {
-		res.status(401).json({ msg: "Token invalido" });
-	}
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(" ")[1];
+  const type = authHeader && authHeader.split(" ")[0];
+  if (!token) return res.status(401).json({ msg: "No se encontró token" });
+  try {
+    if (type === "Basic") {
+      const decoded = Buffer.from(token, "base64").toString("ascii");
+      const [username, password] = decoded.split(":");
+      usuario
+        .findOne({ where: { nombre: username } })
+        .then((user) => {
+          if (!user) {
+            return res.sendStatus(403);
+          } else {
+            const comparePassword = comparePass(password, user.password);
+            if (!comparePassword)
+              return res.status(400).json({ msg: "Contraseña incorrecta" });
+            if (user.dataValues.tipo === "NORMAL") {
+              return res.status(401).json({ msg: "No estas autorizado" });
+            }
+            req.user = user;
+            console.log(user.dataValues.tipo);
+            next();
+          }
+        })
+        .catch((error) => {
+          res.status(500).json({ message: "Internal server error" });
+        });
+    } else if (type === "Bearer") {
+      const decoded = verify(token, secret);
+      if (decoded.type === "NORMAL")
+        return res.status(401).json({ msg: "No estas autorizado" });
+      req.user = decoded;
+      next();
+    }
+  } catch (error) {
+    res.status(401).json({ msg: "Token invalido" });
+  }
 };
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
   if (!authHeader || !authHeader.startsWith("Basic ")) {
     return res.sendStatus(401);
-  } 
+  }
 
   const basicToken = authHeader.slice(6);
 
   const decoded = Buffer.from(basicToken, "base64").toString("ascii");
   const [username, password] = decoded.split(":");
-
+  console.log("middlewares", decoded);
   usuario
     .findOne({ where: { nombre: username } })
     .then((user) => {
@@ -47,11 +66,11 @@ function authenticateToken(req, res, next) {
         const comparePassword = comparePass(password, user.password);
         if (!comparePassword)
           return res.status(400).json({ msg: "Contraseña incorrecta" });
-          if(user.dataValues.tipo === "NORMAL"){
-            return res.status(401).json({ msg: "No estas autorizado" });
-          }
+        if (user.dataValues.tipo === "NORMAL") {
+          return res.status(401).json({ msg: "No estas autorizado" });
+        }
         req.user = user;
-        console.log(user.dataValues.tipo)
+        console.log(user.dataValues.tipo);
         next();
       }
     })
@@ -60,7 +79,6 @@ function authenticateToken(req, res, next) {
       res.status(500).json({ message: "Internal server error" });
     });
 }
-
 
 // Función que genera un Basic Token
 function generateBasicToken(username, password) {
@@ -87,8 +105,6 @@ const verifyToken = (token) => {
     throw new Error("Token Invalido");
   }
 };
-
-
 
 module.exports = {
   createTokenJWT,
