@@ -7,6 +7,7 @@ export const Navbar = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("basicToken");
+    localStorage.setItem("isAuth", false);
     navigate("/login");
   };
 
