@@ -26,6 +26,8 @@ docker-compose up --build
 4. Asegurate de haber configurado tu base de datos local
 
 
+## En caso de no utilizar docker puedes correr el proyecto con estos comandos
+
 Installar dependencias en el Servidor
 ```
 npm install
