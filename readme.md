@@ -36,7 +36,7 @@ npm install
 Instalar dependencias en el Cliente
 ```
 cd client
-npm instal;
+npm install;
 ```
 
 ## Requisitos previos
