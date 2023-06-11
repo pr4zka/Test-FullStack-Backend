@@ -7,6 +7,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getIngrediente, updatedIngrediente } from "../../api/ingrediente";
 import { showNotification } from "../../feactures/toastify/toastifySlice";
+import { verify } from "../../checkType/verify";
 
 export const IngredientesForm = () => {
   const [ing, setIng] = useState({
@@ -22,16 +23,14 @@ export const IngredientesForm = () => {
   const isEditPage = location.pathname.includes("/edit");
 
   const handleCreate = async (values) => {
+    const token = localStorage.getItem("token");
+    const basicToken = localStorage.getItem("basicToken");
+    const headers = {
+      Accept: "application/json",
+      Authorization: verify(basicToken, token)
+    }
     try {
-         await axios.post(
-        `http://localhost:3000/api/ingredientes`,
-        values, {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          }
-        }
-      );
+      await axios.post(`http://localhost:3000/api/ingredientes`,values, { headers });
       dispatch(fetchIngredientes());
     } catch (error) {
       dispatch(showNotification("error", "Internal server error"));
@@ -44,7 +43,7 @@ export const IngredientesForm = () => {
       dispatch(showNotification("success", "Ingrediente actualizado"))
       navigate("/ingredientes");
     } catch (error) {
-        if (error.response.status === 401)
+      if (error.response.status === 401)
         dispatch(
           showNotification(
             "error",

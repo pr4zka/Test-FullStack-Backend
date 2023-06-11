@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { fetchPizzaDetalle } from "../../feactures/pizzas/pizzasSlice";
 import { showNotification } from "../../feactures/toastify/toastifySlice";
+import {verify} from '../../checkType/verify'
 
 export const IngredientesAdd = () => {
   const dispatch = useDispatch();

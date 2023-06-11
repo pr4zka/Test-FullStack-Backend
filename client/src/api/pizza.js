@@ -20,8 +20,6 @@ export const addIngrediente = async (pizzaId, ingredienteId) => await axios.post
 export const updatedPizza = async (id, pizza) => {
  const basicToken = localStorage.getItem('basicToken');
   const token = localStorage.getItem('token');
-  console.log("basicToken", basicToken)
-  console.log("token", token)
   const headers = {
     Accept: 'application/json',
     Authorization: verify(basicToken, token)

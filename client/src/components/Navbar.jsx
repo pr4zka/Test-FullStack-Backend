@@ -26,7 +26,7 @@ export const Navbar = () => {
           </Link>
         </li>
         <li>
-          {localStorage.getItem("token") ? (
+          {localStorage.getItem("token")  || localStorage.getItem("basicToken")? (
             <button
               onClick={handleLogout}
               className="bg-indigo-700 text-white text-sm font-medium px-2 py-1 hover:bg-indigo-600 focus:outline-none rounded"
